@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { Container } from 'semantic-ui-react'
+import React, { Fragment, useEffect, useState } from 'react'
+import { Container, Header, List } from 'semantic-ui-react'
 import axios from 'axios'
 import { Activity } from '../models/activity';
 import NavBar from './NavBar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
-import {v4 as uuid} from 'uuid';
 
 
 
@@ -61,28 +60,6 @@ function App() {
     setEditMode(false);
   }
 
-  //function to create or edit activity
-  function handleCreateOrEditActivity (activity: Activity) {
-    //check if an activity exists
-    //then use the spread operator to loop over existing activities
-    //if x goes to x.id is not equal to the activity id we passed in
-    //then after the comma we pass in the new or newly updated activity.
-    activity.id ? setActivities([...activities.filter(x => x.id !== activity.id), activity])
-    //else if we do not have an activity then we create a new one and pass in a uuid to create a new one.
-    : setActivities([...activities, {...activity, id: uuid()}]);
-    
-    //turn off editMode
-    setEditMode(false);
-
-    //set the selected activity to the id we just created
-    setSelectedActivity(activity);
-  }
-
-  //function to delete an activity
-  function handleDeleteActivity(id: string) {
-    setActivities([...activities.filter(x => x.id !== id)])
-  }
-
     return (
       <>
         <NavBar openForm={handleFormOpen} />
@@ -99,8 +76,6 @@ function App() {
             editMode={editMode}
             openForm={handleFormOpen}
             closeForm={handleFormClose}
-            createOrEdit={handleCreateOrEditActivity}
-            deleteActivity={handleDeleteActivity}
              />
         </Container>
         
