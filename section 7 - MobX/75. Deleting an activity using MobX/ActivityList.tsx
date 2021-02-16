@@ -6,7 +6,7 @@ import { useStore } from '../../../app/stores/store';
 
 export default observer(function ActivityList() {
   const {activityStore} = useStore();
-  const {deleteActivity, activitiesByDate, loading} = activityStore;
+  const {deleteActivity, activities, loading} = activityStore;
 
   const [target, setTarget] = useState('');
 
@@ -24,7 +24,7 @@ export default observer(function ActivityList() {
   return (
     <Segment>
       <Item.Group divided>
-        {activitiesByDate.map(activity => (
+        {activities.map(activity => (
           <Item key ={activity.id}>
             <Item.Content>
               <Item.Header as='a'>{activity.title}</Item.Header>
