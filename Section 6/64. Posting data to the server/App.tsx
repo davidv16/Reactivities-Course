@@ -36,7 +36,6 @@ function App() {
   const [submitting, setSubmitting] = useState(false);
 
   //a react hook that is used to change the state of the App component
-  //renders when the app renders
   useEffect(() => {
     //sends the axios get request specified in agent.ts
     agent.Activities.list().then(response => {
@@ -127,16 +126,6 @@ function App() {
 
   //function to delete an activity
   function handleDeleteActivity(id: string) {
-    setSubmitting(true);
-    //run the delete request to the api from axios
-    agent.Activities.delete(id).then(() => {
-      console.log(...activities.filter(x => x.id !== id));
-      //filter out all activities that don't match the passed id
-      //and set the passed id to the activity that we want to delete
-      setActivities([...activities.filter(x => x.id !== id)]);
-      //turn submitting off
-      setSubmitting(false);
-    })
     //spreads out the activity items and filters everything out that isn't the id we pass in
     setActivities([...activities.filter(x => x.id !== id)])
   }

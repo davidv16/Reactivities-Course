@@ -5,7 +5,6 @@ import NavBar from './NavBar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 import {v4 as uuid} from 'uuid';
 import agent from '../api/agent';
-import LoadingComponent from './LoadingComponent';
 
 
 
@@ -25,34 +24,11 @@ function App() {
   //args 2: the state
   const [editMode, setEditMode] = useState(false);
 
-  //a hook to set the state of loading on or off
-  //args 1: variable boolean
-  //args 2: the state
-  const [loading, setLoading] = useState(true);
-
-  //a hook to set the state of submitting on or off
-  //args 1: variable boolean
-  //args 2: the state
-  const [submitting, setSubmitting] = useState(false);
-
   //a react hook that is used to change the state of the App component
-  //renders when the app renders
   useEffect(() => {
-    //sends the axios get request specified in agent.ts
+    //sends the axios requests specified in agent.ts
     agent.Activities.list().then(response => {
-      //empty seperate activities array of type activity array
-      let activities: Activity[] = [];
-      //from the response, for each activity
-      response.forEach(activity => {
-        //each date from the activity should be split the text based on the T character
-        //and we'll take the first part of what we split into
-        //will return a numbered date and not the time information
-        activity.date = activity.date.split('T')[0];
-        //and we'll push our activity into the activities array above
-        activities.push(activity);
-      })
-        setActivities(activities);
-        setLoading(false);
+        setActivities(response);
       })
   }, [])
 
@@ -87,61 +63,26 @@ function App() {
 
   //function to create or edit activity
   function handleCreateOrEditActivity (activity: Activity) {
-    // to start the loading indicators
-    setSubmitting(true);
+    //check if an activity exists
+    //then use the spread operator to loop over existing activities
+    //if x goes to x.id is not equal to the activity id we passed in
+    //then after the comma we pass in the new or newly updated activity.
+    activity.id ? setActivities([...activities.filter(x => x.id !== activity.id), activity])
+    //else if we do not have an activity then we create a new one and pass in a uuid to create a new one.
+    : setActivities([...activities, {...activity, id: uuid()}]);
+    
+    //turn off editMode
+    setEditMode(false);
 
-
-    //EDIT/UPDATE 
-    //if there exists an activity.id
-    if(activity.id) {
-      //run the update request to the api from axios
-      agent.Activities.update(activity).then(() => {
-        //filter out the activities that don't match the id passed
-        //and set the activities to the new activity
-        setActivities([...activities.filter(x => x.id !== activity.id), activity])
-        //set the selected activity to the updated activity
-        setSelectedActivity(activity);
-        //set edit mode to false
-        setEditMode(false);
-        //and set submitting mode to false
-        setSubmitting(false);
-      })
-    } else {
-
-      //CREATE
-      //generate a new uuid
-      activity.id = uuid();
-      //run the create request to the api from axios
-      agent.Activities.create(activity).then(() => {
-        //set the new activity to the activity array
-        setActivities([...activities, activity])
-        //set the selected activity to the new activity
-        setSelectedActivity(activity);
-        //set edit mode to false
-        setEditMode(false);
-        //and set submitting mode to false
-        setSubmitting(false);
-      })
-    }
+    //set the selected activity to the id we just created
+    setSelectedActivity(activity);
   }
 
   //function to delete an activity
   function handleDeleteActivity(id: string) {
-    setSubmitting(true);
-    //run the delete request to the api from axios
-    agent.Activities.delete(id).then(() => {
-      console.log(...activities.filter(x => x.id !== id));
-      //filter out all activities that don't match the passed id
-      //and set the passed id to the activity that we want to delete
-      setActivities([...activities.filter(x => x.id !== id)]);
-      //turn submitting off
-      setSubmitting(false);
-    })
     //spreads out the activity items and filters everything out that isn't the id we pass in
     setActivities([...activities.filter(x => x.id !== id)])
   }
-  //checks if the frontend is loading before it renders the Loading component
-  if (loading) return <LoadingComponent content='Loading app'/>
 
     return (
       <>
@@ -161,7 +102,6 @@ function App() {
             closeForm={handleFormClose}
             createOrEdit={handleCreateOrEditActivity}
             deleteActivity={handleDeleteActivity}
-            submitting={submitting}
              />
         </Container>
         
