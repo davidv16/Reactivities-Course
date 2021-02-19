@@ -45,6 +45,15 @@ export default class ActivityStore {
     }
   }
 
+  loadActivity = async (id: string) => {
+    let activity = this.getActivity(id);
+
+  }
+
+  pink
+  getActivity(id: string) {
+    this.selectedActivity = 
+  }
   //action to turn the loading symbol on
   setLoadingInitial = (state: boolean) => {
     this.loadingInitial = state;
