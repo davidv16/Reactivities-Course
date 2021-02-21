@@ -1,22 +1,12 @@
-import { observer } from 'mobx-react-lite';
-import React, { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React from 'react';
 import { Button, Card, Image } from 'semantic-ui-react';
 import LoadingComponent from '../../../app/layout/LoadingComponent';
 import { useStore } from '../../../app/stores/store';
 
 
-export default observer (function ActivityDetails() {
+export default function ActivityDetails() {
   const {activityStore} = useStore();
-  const {selectedActivity: activity, loadActivity} = activityStore;
-  const {id} = useParams<{id: string}>();
-
-  useEffect(() => {
-    //check if id from url parameters exists
-    //load a single activity with the id from the url
-    if(id) loadActivity(id);
-    //set the url id and loadActivity function as a dependency
-  }, [id, loadActivity])
+  const {selectedActivity: activity} = activityStore;
 
   if(!activity) return <LoadingComponent/>;
 
@@ -34,10 +24,10 @@ export default observer (function ActivityDetails() {
       </Card.Content>
       <Card.Content extra>
         <Button.Group>
-          <Button as={Link} to={`/manage/${activity.id}`} basic color='blue' content='Edit' />
-          <Button as={Link} to={'/activities'} basic color='grey' content='Cancel'/>
+          <Button basic color='blue' content='Edit' />
+          <Button basic color='grey' content='Cancel'/>
         </Button.Group>
       </Card.Content>
     </Card>
   )
-})
+}

@@ -23,8 +23,6 @@ export default class ActivityStore {
 
   //action to load in the list of activities to populate our app
   loadActivities = async () => {
-    //start loading symbol
-    this.loadingInitial = true;
     try {
       //returns a list of activities
       const activities = await agent.Activities.list();
@@ -60,8 +58,6 @@ export default class ActivityStore {
         //run the helper function to set the current activity
         //to the activity map
         this.setActivity(activity);
-        //set the activity to the selected Activity
-        this.selectedActivity = activity;
         //set the loading symbol to false
         this.setLoadingInitial(false);
       } catch (error) {
