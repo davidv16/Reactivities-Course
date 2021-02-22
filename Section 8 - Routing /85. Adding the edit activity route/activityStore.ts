@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
 import { Activity } from "../models/activity";
+import {v4 as uuid} from 'uuid';
 
 export default class ActivityStore {
   activityRegistry = new Map<string, Activity>();
@@ -104,6 +105,8 @@ export default class ActivityStore {
   createActivity = async (activity: Activity) => {
     //turn on loading
     this.loading = true;
+    //generates a new uuid for the new activity
+    activity.id = uuid();
     try {
       //sends a create request with axios to the api with the new activity as a parameter
       await agent.Activities.create(activity);
